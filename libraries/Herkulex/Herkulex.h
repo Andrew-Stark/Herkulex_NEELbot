@@ -127,6 +127,7 @@ public:
 private:
   void sendData(byte* buffer, int lenght);
   void readData(int size);
+  char* createPacket(char PID, char CMD, * char data);
   void addData(int GoalLSB, int GoalMSB, int set, int servoID);
   int  checksum1(byte* data, int lenghtString);
   int  checksum2(int XOR);

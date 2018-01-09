@@ -35,6 +35,14 @@
  Web:     http://robottini.altervista.org
  Autor:   Alessandro Giacomel
  *****************************************************************************  
+ 
+	01/01/2018	- Simplifying library for use with NEELbot.
+			- Intended changes:
+				write "send package" function to replace specialized internals of Herkulex.MEMBER functions, improve readability and reliability
+				add member function to handle writing different motions to all motors, simultaneous movement.
+				include capability to read 40 x 19 motion array
+				will perhaps need to write program (python, excel, matlab) to convert ASCII text files (in degrees) to binary files for creating arrays.
+
 */
 #include "Herkulex.h"
 #include "SoftwareSerial.h"
