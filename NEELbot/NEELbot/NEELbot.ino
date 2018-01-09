@@ -1,5 +1,5 @@
 #include <Herkulex.h>
-#include <SoftwareSerial.h>
+//#include <SoftwareSerial.h>
 
 int testMotor = 19;
 int angle1 = 20;
@@ -10,21 +10,18 @@ char* data;
 
 
 void setup() {
-  delay(1000);
   Serial.begin(115200);
-  //Herkulex.begin(115200,0,1); 
-  delay(250);
   Herkulex.reboot(testMotor);
+  //delay(250);
+  Herkulex.setLed(testMotor, LED_GREEN);
 
-  //Herkulex.initialize();
-  Herkulex.torqueON(testMotor);
+  //delay(2000);
 
-  Herkulex.moveOne(testMotor, angle3, testPtime, LED_GREEN);
+  
 
-  //int pos = Herkulex.getPosition(testMotor);
-  //Serial.println(pos);
+  delay(2000);
 
-  Herkulex.setLed(19, LED_GREEN);
+  Herkulex.setLed(testMotor, LED_BLUE);
 
   delay(2000);
   Herkulex.reboot(testMotor);

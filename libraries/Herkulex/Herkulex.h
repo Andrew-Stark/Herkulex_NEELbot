@@ -64,19 +64,19 @@
 #define HREBOOT	 	 0x09 	//Reboot
 
 // HERKULEX LED - See Manual p29
-static int LED_GREEN =	 0x01;
-static int LED_BLUE  =   0x02;
-static int LED_CYAN  =   0x03;
-static int LED_RED   = 	 0x04;
-static int LED_GREEN2= 	 0x05;
-static int LED_PINK  =   0x06;
-static int LED_WHITE =   0x07;
+static byte LED_GREEN =	 0x01;
+static byte LED_BLUE  =   0x02;
+static byte LED_CYAN  =   0x03;
+static byte LED_RED   =	 0x04;
+static byte LED_GREEN2= 	 0x05;
+static byte LED_PINK  =   0x06;
+static byte LED_WHITE =   0x07;
 
 // HERKULEX STATUS ERROR - See Manual p39
 static byte H_STATUS_OK					= 0x00;
 static byte H_ERROR_INPUT_VOLTAGE 		= 0x01;
 static byte H_ERROR_POS_LIMIT			= 0x02;
-static byte H_ERROR_TEMPERATURE_LIMIT	= 0x04;
+static byte H_ERROR_TEMPERATURE_LIMIT		= 0x04;
 static byte H_ERROR_INVALID_PKT			= 0x08;
 static byte H_ERROR_OVERLOAD			= 0x10;
 static byte H_ERROR_DRIVER_FAULT  		= 0x20;
@@ -117,7 +117,7 @@ public:
   int   getSpeed(int servoID);
 		
   void  reboot(int servoID);
-  void  setLed(int servoID, int valueLed);
+  void  setLed(int servoID, byte valueLed);
  
   void  writeRegistryRAM(int servoID, int address, int writeByte);
   void  writeRegistryEEP(int servoID, int address, int writeByte);
@@ -127,7 +127,7 @@ public:
 private:
   void sendData(byte* buffer, int lenght);
   void readData(int size);
-  byte createPacket(byte PID, byte CMD,  byte* data, byte* packet);
+  byte createPacket(byte PID, byte CMD,  byte* data);
   void addData(int GoalLSB, int GoalMSB, int set, int servoID);
   int  checksum1(byte* data, int lenghtString);
   int  checksum2(int XOR);

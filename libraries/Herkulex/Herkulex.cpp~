@@ -542,42 +542,18 @@ float HerkulexClass::getAngle(int servoID) {
 // STARK - change should allow all servos, have not tested (1/1/18)
 void HerkulexClass::reboot(int servoID) {
         
-	byte * requestPacket;
-	byte * dummyData = {'\0'};
-	int packetSize = createPacket((byte)servoID, HREBOOT, dummyData, requestPacket);
-	for(int i=0;i<packetSize;i++){
-	Serial.write(requestPacket[i]);
-	}	
-	//Serial.flush();
-	//Serial.write(requestPacket, packetSize);	
+	byte dummyData[1] = {'\0'};
+	Serial.flush();
+	createPacket(servoID, HREBOOT, dummyData);
+		
 }
 
 // LED  - see table of colors 
-void HerkulexClass::setLed(int servoID, int valueLed)
+void HerkulexClass::setLed(int servoID, byte valueLed)
 {
-	pSize   = 0x0A;               // 3.Packet size 7-58
-	pID     = servoID;            // 4. Servo ID
-	cmd     = HRAMWRITE;          // 5. CMD
-	data[0] = 0x35;               // 8. Address 53
-    	data[1] = 0x01;               // 9. Lenght
-	data[2] = valueLed;           // 10.LedValue
-	lenghtString=3;               // lenghtData
-  	  	
-	ck1=checksum1(data,lenghtString);	//6. Checksum1
-	ck2=checksum2(ck1);					//7. Checksum2
-
-	dataEx[0] = 0xFF;			// Packet Header
-	dataEx[1] = 0xFF;			// Packet Header	
-	dataEx[2] = pSize;	 		// Packet Size
-	dataEx[3] = pID;			// Servo ID
-	dataEx[4] = cmd;			// Command Ram Write
-	dataEx[5] = ck1;			// Checksum 1
-	dataEx[6] = ck2;			// Checksum 2
-	dataEx[7] = data[0];        // Address
-	dataEx[8] = data[1];       	// Length
-	dataEx[9] = data[2];        // Value
-
-	sendData(dataEx, pSize);
+	byte realData[4] = {0x35,0x01, 0x02, '\0'};
+	Serial.flush();
+	createPacket(19, 0x03, realData); 
 }
 
 // get the speed for one servo - values betweeb -1023 <--> 1023
@@ -843,7 +819,7 @@ void HerkulexClass::writeRegistryEEP(int servoID, int address, int writeByte)
 
 // createPacket
 // returns the size of the packet, fills argument char* packet with packet, can be used with sendData(int, int)
-byte HerkulexClass::createPacket(byte PID, byte CMD, byte * data, byte * packet)
+byte HerkulexClass::createPacket(byte PID, byte CMD, byte * data)
 {
       // brute force find length of input data array
       byte dataSize = 0;
@@ -872,6 +848,8 @@ byte HerkulexClass::createPacket(byte PID, byte CMD, byte * data, byte * packet)
       chksm1 &= 0xFE;
       chksm2 &= 0xFE;
 
+      byte packet[packetSize];
+
       packet[0] = 0xFF;
       packet[1] = 0xFF;
       packet[2] = packetSize;
@@ -885,7 +863,10 @@ byte HerkulexClass::createPacket(byte PID, byte CMD, byte * data, byte * packet)
         packet[i+7] = data[i];
       }
 
-      return packetSize;
+      for(int i=0; i<packetSize; i++)
+      {
+        Serial.write(packet[i]);
+      }
 }	
 // checksum1
 int HerkulexClass::checksum1(byte* data, int lenghtString)
