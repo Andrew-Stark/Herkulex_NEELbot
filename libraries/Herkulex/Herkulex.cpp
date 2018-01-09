@@ -539,24 +539,14 @@ float HerkulexClass::getAngle(int servoID) {
 }
 
 // reboot single servo - pay attention 253 - all servos doesn't work!
+// STARK - change should allow all servos, have not tested (1/1/18)
 void HerkulexClass::reboot(int servoID) {
         
-    pSize = 0x07;               // 3.Packet size 7-58
-	pID   = servoID;     	    // 4. Servo ID - 253=all servos
-	cmd   = HREBOOT;            // 5. CMD
-    ck1=(pSize^pID^cmd)&0xFE;
-    ck2=(~(pSize^pID^cmd))&0xFE ; ;	
-
-	dataEx[0] = 0xFF;			// Packet Header
-	dataEx[1] = 0xFF;			// Packet Header	
-	dataEx[2] = pSize;	 		// Packet Size
-	dataEx[3] = pID;			// Servo ID
-	dataEx[4] = cmd;			// Command Ram Write
-	dataEx[5] = ck1;			// Checksum 1
-	dataEx[6] = ck2;			// Checksum 2
-	
-	sendData(dataEx, pSize);
-
+	byte requestPacket[7];
+	byte * dummyData = {'\0'};
+	Serial.flush();
+	createPacket((byte)servoID, HREBOOT, dummyData, requestPacket);
+		
 }
 
 // LED  - see table of colors 
@@ -848,6 +838,55 @@ void HerkulexClass::writeRegistryEEP(int servoID, int address, int writeByte)
 
 // Private Methods //////////////////////////////////////////////////////////////
 
+// createPacket
+// returns the size of the packet, fills argument char* packet with packet, can be used with sendData(int, int)
+byte HerkulexClass::createPacket(byte PID, byte CMD, byte * data, byte * packet)
+{
+      // brute force find length of input data array
+      byte dataSize = 0;
+      byte chksm1 = 0;
+      byte chksm2 = 0;
+      while(data[dataSize] != '\0')
+      {
+        //Serial.println((int)data[dataSize]);
+        dataSize++;
+      }
+      //Serial.println(dataSize);
+      // add 7 for minimum size of packet (bytes) with no data
+      byte packetSize = dataSize + 7;
+
+      // checksum logic, see p 20 Herkulex DRS 0101, 0202 User Manual
+      chksm1 ^= packetSize;
+      chksm1 ^= PID;
+      chksm1 ^= CMD;
+
+      for(int i=0; i<dataSize; i++)
+      {
+        chksm1 ^= data[i];
+      }
+      
+      chksm2 = ~chksm1;
+      chksm1 &= 0xFE;
+      chksm2 &= 0xFE;
+
+      packet[0] = 0xFF;
+      packet[1] = 0xFF;
+      packet[2] = packetSize;
+      packet[3] = PID;
+      packet[4] = CMD;
+      packet[5] = chksm1;
+      packet[6] = chksm2;
+
+      for(int i=0; i<packetSize; i++)
+      {
+        packet[i+7] = data[i];
+      }
+
+      for(int i=0; i<packetSize; i++)
+      {
+        Serial.write(packet[i]);
+      }
+}	
 // checksum1
 int HerkulexClass::checksum1(byte* data, int lenghtString)
 {
@@ -888,7 +927,7 @@ void HerkulexClass::sendData(byte* buffer, int lenght)
 						SwSerial.write(buffer, lenght);
 						delay(1);
 						break;
-			#if defined (__AVR_ATmega1280__) || defined (__AVR_ATmega128__) || defined (__AVR_ATmega2560__)
+			#if defined (__AVR_ATmega1280__) || defined (__AVR_ATmega128__) || defined (__AVR_ATmega2560__) || (__AVR_ATmega328__)
 			case HSerial1:
 				Serial1.write(buffer, lenght);
 				delay(1);
