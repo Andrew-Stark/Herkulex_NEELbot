@@ -39,8 +39,13 @@ void createPacket(byte PID, byte CMD, byte * data)
       for(int i=0; i<packetSize; i++)
       {
         packet[i+7] = data[i];
+        if(packet[i]<16)Serial.print('0');
+        Serial.print(packet[i],HEX);
+        if(i%2!=0) Serial.print(' ');
       }
+      Serial.println();
       
       SSerial.write(packet, packetSize);
+      delay(1);
 }
 

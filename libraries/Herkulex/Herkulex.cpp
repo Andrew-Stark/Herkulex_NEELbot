@@ -541,8 +541,8 @@ void HerkulexClass::reboot(byte servoID) {
 	// data: NULL 
 	byte dummyData[1] = {'\0'};
 	createPacket(servoID, HREBOOT, dummyData);
-	//delay(500);
-		
+	clearBuffer();	
+	delay(200);	
 }
 //
 // createPacket( MOTOR ID, Command, data)
@@ -550,8 +550,8 @@ void HerkulexClass::reboot(byte servoID) {
 void HerkulexClass::setLed(byte servoID, byte valueLed)
 {
 	// data: Address, Length, Color, NULL
-	byte realData[4] = {0x35,0x01, 0x02, '\0'};
-	createPacket(19, 0x03, realData); 
+	byte realData[4] = {0x35,0x01, valueLed, '\0'};
+	createPacket(servoID, 0x03, realData); 
 	clearBuffer();
 }
 
