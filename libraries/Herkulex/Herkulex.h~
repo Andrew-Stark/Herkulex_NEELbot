@@ -76,7 +76,7 @@ static byte LED_WHITE =   0x07;
 static byte H_STATUS_OK					= 0x00;
 static byte H_ERROR_INPUT_VOLTAGE 		= 0x01;
 static byte H_ERROR_POS_LIMIT			= 0x02;
-static byte H_ERROR_TEMPERATURE_LIMIT	= 0x04;
+static byte H_ERROR_TEMPERATURE_LIMIT		= 0x04;
 static byte H_ERROR_INVALID_PKT			= 0x08;
 static byte H_ERROR_OVERLOAD			= 0x10;
 static byte H_ERROR_DRIVER_FAULT  		= 0x20;
@@ -127,7 +127,7 @@ public:
 private:
   void sendData(byte* buffer, int lenght);
   void readData(int size);
-  byte createPacket(byte PID, byte CMD,  byte* data);
+  void createPacket(byte PID, byte CMD,  byte* data);
   void addData(int GoalLSB, int GoalMSB, int set, int servoID);
   int  checksum1(byte* data, int lenghtString);
   int  checksum2(int XOR);

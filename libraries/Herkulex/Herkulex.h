@@ -116,8 +116,8 @@ public:
   float getAngle(int servoID);
   int   getSpeed(int servoID);
 		
-  void  reboot(int servoID);
-  void  setLed(int servoID, byte valueLed);
+  void  reboot(byte servoID);
+  void  setLed(byte servoID, byte valueLed);
  
   void  writeRegistryRAM(int servoID, int address, int writeByte);
   void  writeRegistryEEP(int servoID, int address, int writeByte);
@@ -127,7 +127,7 @@ public:
 private:
   void sendData(byte* buffer, int lenght);
   void readData(int size);
-  byte createPacket(byte PID, byte CMD,  byte* data);
+  void createPacket(byte PID, byte CMD,  byte* data);
   void addData(int GoalLSB, int GoalMSB, int set, int servoID);
   int  checksum1(byte* data, int lenghtString);
   int  checksum2(int XOR);

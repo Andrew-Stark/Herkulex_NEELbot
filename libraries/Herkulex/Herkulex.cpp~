@@ -54,7 +54,7 @@
 #define HSerial3     3   	// Write in Serial 3 port Arduino Mega - Pin 15(rx) - 14 (tx)
 #define SSerial      4   	// Write in SoftSerial Arduino with 328p or Mega
  
-extern SoftwareSerial SwSerial(0, 1);
+extern SoftwareSerial SwSerial(4,3);
 
 // Herkulex begin with Arduino Uno
 void HerkulexClass::begin(long baud, int rx, int tx)
@@ -543,16 +543,16 @@ float HerkulexClass::getAngle(int servoID) {
 void HerkulexClass::reboot(int servoID) {
         
 	byte dummyData[1] = {'\0'};
-	Serial.flush();
+	//Serial.flush();
 	createPacket(servoID, HREBOOT, dummyData);
 		
 }
-
+//
+// createPacket( MOTOR ID, Command, data)
 // LED  - see table of colors 
 void HerkulexClass::setLed(int servoID, byte valueLed)
 {
 	byte realData[4] = {0x35,0x01, 0x02, '\0'};
-	Serial.flush();
 	createPacket(19, 0x03, realData); 
 }
 
@@ -819,7 +819,7 @@ void HerkulexClass::writeRegistryEEP(int servoID, int address, int writeByte)
 
 // createPacket
 // returns the size of the packet, fills argument char* packet with packet, can be used with sendData(int, int)
-byte HerkulexClass::createPacket(byte PID, byte CMD, byte * data)
+void HerkulexClass::createPacket(byte PID, byte CMD, byte * data)
 {
       // brute force find length of input data array
       byte dataSize = 0;
@@ -827,10 +827,9 @@ byte HerkulexClass::createPacket(byte PID, byte CMD, byte * data)
       byte chksm2 = 0;
       while(data[dataSize] != '\0')
       {
-        //Serial.println((int)data[dataSize]);
         dataSize++;
       }
-      //Serial.println(dataSize);
+    
       // add 7 for minimum size of packet (bytes) with no data
       byte packetSize = dataSize + 7;
 
@@ -862,32 +861,9 @@ byte HerkulexClass::createPacket(byte PID, byte CMD, byte * data)
       {
         packet[i+7] = data[i];
       }
-
-      for(int i=0; i<packetSize; i++)
-      {
-        Serial.write(packet[i]);
-      }
+      
+      sendData(packet, packetSize);
 }	
-// checksum1
-int HerkulexClass::checksum1(byte* data, int lenghtString)
-{
-  XOR = 0;	
-  XOR = XOR ^ pSize;
-  XOR = XOR ^ pID;
-  XOR = XOR ^ cmd;
-  for (int i = 0; i < lenghtString; i++) 
-  {
-    XOR = XOR ^ data[i];
-  }
-  return XOR&0xFE;
-}
-
-
-// checksum2
-int HerkulexClass::checksum2(int XOR)
-{
-  return (~XOR)&0xFE;
-}
 
 // add data to variable list servo for syncro execution
 void HerkulexClass::addData(int GoalLSB, int GoalMSB, int set, int servoID)
