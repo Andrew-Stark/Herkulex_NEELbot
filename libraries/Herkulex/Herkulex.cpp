@@ -538,6 +538,7 @@ float HerkulexClass::getAngle(int servoID) {
 // STARK - change should allow all servos, have not tested (1/1/18)
 void HerkulexClass::reboot(byte servoID) {
         
+	if((servoID < 0)||(servoID > 254))return;
 	// data: NULL 
 	byte dummyData[1] = {'\0'};
 	createPacket(servoID, HREBOOT, dummyData);
@@ -549,6 +550,8 @@ void HerkulexClass::reboot(byte servoID) {
 // LED  - see table of colors 
 void HerkulexClass::setLed(byte servoID, byte valueLed)
 {
+	if((valueLed < 1)||(valueLed > 9))return;
+	if((servoID < 0)||(servoID > 254))return;
 	// data: Address, Length, Color, NULL
 	byte realData[4] = {0x35,0x01, valueLed, '\0'};
 	createPacket(servoID, 0x03, realData); 
