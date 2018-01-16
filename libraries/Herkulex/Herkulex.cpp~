@@ -826,7 +826,7 @@ void HerkulexClass::createPacket(byte PID, byte CMD, byte * data)
       {
         dataSize++;
       }
-      Serial.println(dataSize); 
+      //Serial.println(dataSize); 
       // add 7 for minimum size of packet (bytes) with no data
       byte packetSize = dataSize + 7;
 
@@ -859,12 +859,12 @@ void HerkulexClass::createPacket(byte PID, byte CMD, byte * data)
       for(int i=0; i<packetSize; i++)
       {
         packet[i+7] = data[i];
-	n = sprintf(str, "%02X", packet[i]);
+	sprintf(str, "%02X", packet[i]);
 	Serial.print(str[i]);
 	if(i%2!=0) Serial.print(' ');
       }
-      Serial.write(str,n);
-      //Serial.write(packet, packetSize);
+      Serial.println();
+      //Serial.println(packet);
       sendData(packet, packetSize);
       
       clearBuffer();
