@@ -10,24 +10,16 @@ char* data;
 
 
 void setup() {
-
-  Herkulex.begin(115200,4,3);
-  Herkulex.reboot(testMotor);
-  delay(2000);
-  Herkulex.setLed(testMotor, LED_GREEN);
-
+  Serial.begin(57600);
+  Herkulex.begin(57600,4,3);
+  Herkulex.reboot(testMotor); 
+  //delay(5000);
+  Herkulex.setLed(testMotor, 0x02);
   //delay(2000);
-
-  
-
-  //delay(2000);
-
-  Herkulex.setLed(testMotor, LED_BLUE);
-
-
+  //Herkulex.setLed(testMotor, 0x01);
+  //delay(2000); 
   Herkulex.reboot(testMotor);
-  
-  
+
 }
 
 void loop() {

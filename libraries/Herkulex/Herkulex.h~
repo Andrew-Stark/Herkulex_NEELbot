@@ -53,8 +53,8 @@
 #define TIME_OUT     5   	//timeout serial communication
 
 // SERVO HERKULEX COMMAND - See Manual p40
-#define HEEPWRITE    0x01 	//Rom write
-#define HEEPREAD     0x02 	//Rom read
+#define HEEPWRITE        0x01	//Rom write
+#define HEEPREAD         0x02 	//Rom read
 #define HRAMWRITE	 0x03 	//Ram write
 #define HRAMREAD	 0x04 	//Ram read
 #define HIJOG		 0x05 	//Write n servo with different timing
@@ -64,11 +64,11 @@
 #define HREBOOT	 	 0x09 	//Reboot
 
 // HERKULEX LED - See Manual p29
-static byte LED_GREEN =	 0x01;
+static byte LED_GREEN =	  0x01;
 static byte LED_BLUE  =   0x02;
 static byte LED_CYAN  =   0x03;
-static byte LED_RED   =	 0x04;
-static byte LED_GREEN2= 	 0x05;
+static byte LED_RED   =	  0x04;
+static byte LED_GREEN2=   0x05;
 static byte LED_PINK  =   0x06;
 static byte LED_WHITE =   0x07;
 
@@ -116,8 +116,8 @@ public:
   float getAngle(int servoID);
   int   getSpeed(int servoID);
 		
-  void  reboot(int servoID);
-  void  setLed(int servoID, byte valueLed);
+  void  reboot(byte servoID);
+  void  setLed(byte servoID, byte valueLed);
  
   void  writeRegistryRAM(int servoID, int address, int writeByte);
   void  writeRegistryEEP(int servoID, int address, int writeByte);
@@ -125,11 +125,11 @@ public:
   
 // private area  
 private:
-  void sendData(byte* buffer, int lenght);
+  void sendData(byte* buffer, int length);
   void readData(int size);
   void createPacket(byte PID, byte CMD,  byte* data);
   void addData(int GoalLSB, int GoalMSB, int set, int servoID);
-  int  checksum1(byte* data, int lenghtString);
+  int  checksum1(byte* data, int lengthString);
   int  checksum2(int XOR);
   void clearBuffer();
   void printHexByte(byte x);
@@ -139,7 +139,7 @@ private:
   int pSize;
   int pID;
   int cmd;
-  int lenghtString;
+  int lengthString;
   int ck1;
   int ck2;
   
